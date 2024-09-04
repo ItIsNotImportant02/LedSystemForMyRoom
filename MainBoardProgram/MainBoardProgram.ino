@@ -87,7 +87,7 @@ void startMenu() {
   lcd.println("2. #Temp setup#");
   lcd.setCursor(2, 2);
   lcd.println("3. #Alarm Clock#");
-  lcd.setCursor(2, 3);
-  lcd.println("Have a good day");
+  lcd.setCursor(1, 3);
+  lcd.println("Have a good day :D");
 
 }
