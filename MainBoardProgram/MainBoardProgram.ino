@@ -1,6 +1,5 @@
 
 #include <LCDI2C_Multilingual.h>
-#include <FastLED.h>
 #include <WS2812FX.h>
 
 #define BUTTON1 16
@@ -17,10 +16,15 @@ States
 */
 int state = 0;
 int currentRow = 0;
+int currentRowDisplay = 0;
+int currentMenuSlide = 0;
 bool change = LOW;
 bool whiteOn = LOW;
 bool tempColorOn = LOW;
 int menuRows = 0;
+
+String menuMain[] = {"1. Mode menu","2. #Temp setup#","3. #Alarm Clock#","Have a good day :D"};
+String menuModes[] = {"Rtrn to HomePage","1. WhiteMode", "2. TempMode","3. #cumming soon","Have a good day :D"};
 
 LCDI2C_Generic lcd(0x27, 20, 4);  // I2C address: 0x27; Display size: 20x4
 
@@ -62,6 +66,12 @@ void loop() {
     buttPressed = HIGH;
   }
 
+  if(digitalRead(BUTTON2) == HIGH && buttPressed == LOW) {
+    sellectFunc();
+    change = HIGH;
+    buttPressed = HIGH;
+  }
+
   if(digitalRead(BUTTON1) == LOW && digitalRead(BUTTON3) == LOW) {
     buttPressed = LOW;
     }
@@ -83,9 +93,21 @@ void loop() {
         menuRows = 3;
         break;
       case 1:
-        menuRows = 2;
+        menuRows = 3;
         break;
     }
+  }
+
+}
+
+void sellectFunc() {
+
+  if(state == 0 && currentRow == 0) {
+    state = 1;
+    change = HIGH;
+    currentRow = 0;
+    cleanDisplay();
+    modesMenu();
   }
 
 }
@@ -119,7 +141,52 @@ void modesMenu() {
   }
   lcd.setCursor(2, 2);
   lcd.println("3. #cumming soon#");
-  lcd.setCursor(1, 3);
+  lcd.setCursor(2, 3);
   lcd.println("Have a good day :D");
 
 }
+
+void displayFunc() {
+  
+  if(currentRow < ) {
+
+    
+
+  }
+
+  if(state == 0) {
+   
+    lcd.setCursor(2, 0);
+    lcd.println(menuMain[currentMenuSlide]);
+    lcd.setCursor(2, 1);
+    lcd.println(menuMain[currentMenuSlide + 1]);
+    lcd.setCursor(2, 2);
+    lcd.println(menuMain[currentMenuSlide + 2]);
+    lcd.setCursor(2, 3);
+    lcd.println(menuMain[currentMenuSlide + 3]);
+
+  }else if(state == 1) {
+
+    lcd.setCursor(2, 0);
+    lcd.println(menuModes[currentMenuSlide]);
+    lcd.setCursor(2, 1);
+    lcd.println(menuModes[currentMenuSlide + 1]);
+    lcd.setCursor(2, 2);
+    lcd.println(menuModes[currentMenuSlide + 2]);
+    lcd.setCursor(2, 3);
+    lcd.println(menuModes[currentMenuSlide + 3]);
+
+  }
+
+void cleanDisplay() {
+  lcd.setCursor(2, 0);
+  lcd.println("                  ");
+  lcd.setCursor(2, 1);
+  lcd.println("                  ");
+  lcd.setCursor(2, 2);
+  lcd.println("                  ");
+  lcd.setCursor(2, 3);
+  lcd.println("                  ");
+}
+
+
