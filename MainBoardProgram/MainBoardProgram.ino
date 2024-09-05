@@ -18,6 +18,9 @@ States
 int state = 0;
 int currentRow = 0;
 bool change = LOW;
+bool whiteOn = LOW;
+bool tempColorOn = LOW;
+int menuRows = 0;
 
 LCDI2C_Generic lcd(0x27, 20, 4);  // I2C address: 0x27; Display size: 20x4
 
@@ -43,14 +46,14 @@ void loop() {
     if(currentRow > 0) {
       currentRow--;
     }else{
-      currentRow = 2;
+      currentRow = menuRows - 1;
     }
     change = HIGH;
     buttPressed = HIGH;
   }
 
   if(digitalRead(BUTTON3) == HIGH && buttPressed == LOW) {
-    if(currentRow < 2) {
+    if(currentRow < menuRows - 1) {
       currentRow++;
     }else{
       currentRow = 0;
@@ -75,6 +78,14 @@ void loop() {
     lcd.setCursor(0, currentRow);
     lcd.println("> ");
     change = LOW;
+    switch(state) {
+      case 0:
+        menuRows = 3;
+        break;
+      case 1:
+        menuRows = 2;
+        break;
+    }
   }
 
 }
@@ -87,6 +98,27 @@ void startMenu() {
   lcd.println("2. #Temp setup#");
   lcd.setCursor(2, 2);
   lcd.println("3. #Alarm Clock#");
+  lcd.setCursor(1, 3);
+  lcd.println("Have a good day :D");
+
+}
+
+void modesMenu() {
+
+  lcd.setCursor(2, 0);
+  if(whiteOn == LOW) {
+    lcd.println("1. WhiteMode OFF");
+  }else{
+    lcd.println("1. WhiteMode ON");
+  }
+  lcd.setCursor(2, 1);
+  if(tempColorOn == LOW) {
+    lcd.println("2. TempMode OFF");
+  }else{
+    lcd.println("2. TempMode ON");
+  }
+  lcd.setCursor(2, 2);
+  lcd.println("3. #cumming soon#");
   lcd.setCursor(1, 3);
   lcd.println("Have a good day :D");
 
