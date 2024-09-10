@@ -40,7 +40,7 @@ void setup() {
   lcd.init();
   lcd.backlight();
 
-  startMenu();
+  /*startMenu();*/
 
   change = HIGH;
 
@@ -83,7 +83,7 @@ void loop() {
   }
 
   if(digitalRead(BUTTON2) == HIGH && buttPressed == LOW) {
-    sellectFunc();
+    /*sellectFunc();*/
     change = HIGH;
     buttPressed = HIGH;
   }
@@ -93,6 +93,7 @@ void loop() {
     }
 
   if(change == HIGH) {
+    /*
     lcd.setCursor(0, 0);
     lcd.println("  ");
     lcd.setCursor(0, 1);
@@ -103,6 +104,9 @@ void loop() {
     lcd.println("  ");
     lcd.setCursor(0, currentRow);
     lcd.println("> ");
+    */
+    displayFunc();
+
     change = LOW;
     switch(state) {
       case 0:
@@ -115,7 +119,7 @@ void loop() {
   }
 
 }
-
+/*
 void sellectFunc() {
 
   if(state == 0 && currentRow == 0) {
@@ -127,6 +131,7 @@ void sellectFunc() {
   }
 
 }
+*/
 
 void startMenu() {
 
@@ -174,8 +179,16 @@ void displayFunc() {
     lcd.println(menuMain[currentMenuSlide + 2]);
     lcd.setCursor(2, 3);
     lcd.println(menuMain[currentMenuSlide + 3]);
+    lcd.setCursor(0, 0);
+    lcd.println("  ");
+    lcd.setCursor(0, 1);
+    lcd.println("  ");
+    lcd.setCursor(0, 2);
+    lcd.println("  ");
+    lcd.setCursor(0, 3);
+    lcd.println("  ");
     lcd.setCursor(0, currentRowDisplay);
-    lcd.println(> )
+    lcd.println("> ");
 
   }else if(state == 1) {
 
@@ -187,10 +200,19 @@ void displayFunc() {
     lcd.println(menuModes[currentMenuSlide + 2]);
     lcd.setCursor(2, 3);
     lcd.println(menuModes[currentMenuSlide + 3]);
+    lcd.setCursor(0, 0);
+    lcd.println("  ");
+    lcd.setCursor(0, 1);
+    lcd.println("  ");
+    lcd.setCursor(0, 2);
+    lcd.println("  ");
+    lcd.setCursor(0, 3);
+    lcd.println("  ");
     lcd.setCursor(0, currentRowDisplay);
-    lcd.println(> )
+    lcd.println("> ");
 
   }
+}
 
 void cleanDisplay() {
   lcd.setCursor(2, 0);
