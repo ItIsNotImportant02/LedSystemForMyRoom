@@ -34,6 +34,8 @@ LCDI2C_Generic lcd(0x27, 20, 4);  // I2C address: 0x27; Display size: 20x4
 
 void setup() {
 
+  Serial.begin(9600);
+
   pinMode(BUTTON1, INPUT);
   pinMode(BUTTON2, INPUT);
   pinMode(BUTTON3, INPUT);
@@ -59,7 +61,9 @@ void loop() {
     if(currentRowDisplay > 0) {
       currentRowDisplay--;
     }else{
-      currentMenuSlide--;
+      if(currentMenuSlide > 0){
+        currentMenuSlide--;
+      }
     }
 
     change = HIGH;
@@ -84,16 +88,22 @@ void loop() {
   }
 
   if(digitalRead(BUTTON2) == HIGH && buttPressed == LOW) {
-    /*sellectFunc();*/
+    sellectFunc();
     change = HIGH;
     buttPressed = HIGH;
   }
 
-  if(digitalRead(BUTTON1) == LOW && digitalRead(BUTTON3) == LOW) {
+  if(digitalRead(BUTTON1) == LOW && digitalRead(BUTTON3) == LOW && digitalRead(BUTTON2) == LOW) {
     buttPressed = LOW;
     }
 
   displayFunc();
+
+  Serial.print("state: " + String(state) + "\t");
+  Serial.print("currentRow: " + String(currentRow) + "\t");
+  Serial.print("currentRowDisplay: " + String(currentRowDisplay) + "\t");
+  Serial.print("menuRows: " + String(menuRows) + "\t");
+  Serial.print("currentMenuSlide: " + String(currentMenuSlide) + "\n");
 
 }
 
@@ -103,7 +113,9 @@ void sellectFunc() {
     case 0: //Hlavni Menu
       switch(currentRow) {
         case 0: // Mode Menu
+            cleanDisplay();
             state = 1;
+            currentMenuSlide = 0;
             menuRows = menuModesRows;
             maxCurrentSlide = menuRows - 4;
           break;
@@ -138,63 +150,52 @@ void sellectFunc() {
 
       break;
   }
-  
-  
-  
-  
-  if(state == 0 && currentRow == 0) {
-    state = 1;
-    change = HIGH;
-    currentRow = 0;
-    cleanDisplay();
-  }
 
 }
 
 void displayFunc() {
 
-  if(state == 0) {
-   
-    lcd.setCursor(2, 0);
-    lcd.println(menuMain[currentMenuSlide]);
-    lcd.setCursor(2, 1);
-    lcd.println(menuMain[currentMenuSlide + 1]);
-    lcd.setCursor(2, 2);
-    lcd.println(menuMain[currentMenuSlide + 2]);
-    lcd.setCursor(2, 3);
-    lcd.println(menuMain[currentMenuSlide + 3]);
-    lcd.setCursor(0, 0);
-    lcd.println("  ");
-    lcd.setCursor(0, 1);
-    lcd.println("  ");
-    lcd.setCursor(0, 2);
-    lcd.println("  ");
-    lcd.setCursor(0, 3);
-    lcd.println("  ");
-    lcd.setCursor(0, currentRowDisplay);
-    lcd.println("> ");
-
-  }else if(state == 1) {
-
-    lcd.setCursor(2, 0);
-    lcd.println(menuModes[currentMenuSlide]);
-    lcd.setCursor(2, 1);
-    lcd.println(menuModes[currentMenuSlide + 1]);
-    lcd.setCursor(2, 2);
-    lcd.println(menuModes[currentMenuSlide + 2]);
-    lcd.setCursor(2, 3);
-    lcd.println(menuModes[currentMenuSlide + 3]);
-    lcd.setCursor(0, 0);
-    lcd.println("  ");
-    lcd.setCursor(0, 1);
-    lcd.println("  ");
-    lcd.setCursor(0, 2);
-    lcd.println("  ");
-    lcd.setCursor(0, 3);
-    lcd.println("  ");
-    lcd.setCursor(0, currentRowDisplay);
-    lcd.println("> ");
-
+  switch(state) {
+    case 0:
+      lcd.setCursor(2, 0);
+      lcd.println(menuMain[currentMenuSlide]);
+      lcd.setCursor(2, 1);
+      lcd.println(menuMain[currentMenuSlide + 1]);
+      lcd.setCursor(2, 2);
+      lcd.println(menuMain[currentMenuSlide + 2]);
+      lcd.setCursor(2, 3);
+      lcd.println(menuMain[currentMenuSlide + 3]);
+      lcd.setCursor(0, 0);
+      lcd.println("  ");
+      lcd.setCursor(0, 1);
+      lcd.println("  ");
+      lcd.setCursor(0, 2);
+      lcd.println("  ");
+      lcd.setCursor(0, 3);
+      lcd.println("  ");
+      lcd.setCursor(0, currentRowDisplay);
+      lcd.println("> ");
+      break;
+    case 1:
+      lcd.setCursor(2, 0);
+      lcd.println(menuModes[currentMenuSlide]);
+      lcd.setCursor(2, 1);
+      lcd.println(menuModes[currentMenuSlide + 1]);
+      lcd.setCursor(2, 2);
+      lcd.println(menuModes[currentMenuSlide + 2]);
+      lcd.setCursor(2, 3);
+      lcd.println(menuModes[currentMenuSlide + 3]);
+      lcd.setCursor(0, 0);
+      lcd.println("  ");
+      lcd.setCursor(0, 1);
+      lcd.println("  ");
+      lcd.setCursor(0, 2);
+      lcd.println("  ");
+      lcd.setCursor(0, 3);
+      lcd.println("  ");
+      lcd.setCursor(0, currentRowDisplay);
+      lcd.println("> ");
+      break;
   }
 }
 
@@ -210,6 +211,9 @@ void cleanDisplay() {
 }
 
 void returnMainMenu() {
+  cleanDisplay();
+  Serial.print("I am idiot");
+  currentMenuSlide = 0;
   menuRows = menuMainRows;
   state = 0;
   maxCurrentSlide = menuRows - 4;
