@@ -21,12 +21,14 @@ int currentMenuSlide = 0;
 bool change = LOW;
 bool whiteOn = LOW;
 bool tempColorOn = LOW;
+bool maxCurrentSlide = 0;
 
-
-String menuMain[] = {"1. Mode menu","2. #Temp setup#","3. #Alarm Clock#","Have a good day :D"};
 int menuRows = 0;
 
+String menuMain[] = {"1. Mode menu","2. #Temp setup#","3. #Alarm Clock#","Have a good day :D"};
+int menuMainRows = 4;
 String menuModes[] = {"Rtrn to HomePage","1. WhiteMode", "2. TempMode","3. #cumming soon","Have a good day :D"};
+int menuModesRows = 5;
 
 LCDI2C_Generic lcd(0x27, 20, 4);  // I2C address: 0x27; Display size: 20x4
 
@@ -40,22 +42,21 @@ void setup() {
   lcd.init();
   lcd.backlight();
 
-  /*startMenu();*/
-
   change = HIGH;
+  menuRows = menuMainRows;
 
 }
 
 void loop() {
 
-  if(digitalRead(BUTTON1) == HIGH && buttPressed == LOW) {
+//Tlačítko Nahoru
+  if(digitalRead(BUTTON1) == HIGH && buttPressed == LOW) { 
+
     if(currentRow > 0) {
       currentRow--;
-    }else{
-      currentRow = menuRows - 1;
     }
 
-    if(currentRowDisplay < 3) {
+    if(currentRowDisplay > 0) {
       currentRowDisplay--;
     }else{
       currentMenuSlide--;
@@ -64,18 +65,18 @@ void loop() {
     change = HIGH;
     buttPressed = HIGH;
   }
-
+//Tlačítko Dolu
   if(digitalRead(BUTTON3) == HIGH && buttPressed == LOW) {
     if(currentRow < menuRows - 1) {
       currentRow++;
-    }else{
-      currentRow = 0;
     }
 
-    if(currentRowDisplay > 0) {
+    if(currentRowDisplay < 3) {
       currentRowDisplay++;
     }else{
-      currentMenuSlide++;
+      if(currentMenuSlide < maxCurrentSlide) {
+        currentMenuSlide++;
+      }
     }
     
     change = HIGH;
@@ -92,78 +93,61 @@ void loop() {
     buttPressed = LOW;
     }
 
-  if(change == HIGH) {
-    /*
-    lcd.setCursor(0, 0);
-    lcd.println("  ");
-    lcd.setCursor(0, 1);
-    lcd.println("  ");
-    lcd.setCursor(0, 2);
-    lcd.println("  ");
-    lcd.setCursor(0, 3);
-    lcd.println("  ");
-    lcd.setCursor(0, currentRow);
-    lcd.println("> ");
-    */
-    displayFunc();
-
-    change = LOW;
-    switch(state) {
-      case 0:
-        menuRows = 3;
-        break;
-      case 1:
-        menuRows = 3;
-        break;
-    }
-  }
+  displayFunc();
 
 }
-/*
+
 void sellectFunc() {
 
+  switch(state) {
+    case 0: //Hlavni Menu
+      switch(currentRow) {
+        case 0: // Mode Menu
+            state = 1;
+            menuRows = menuModesRows;
+            maxCurrentSlide = menuRows - 4;
+          break;
+        case 1: // Temp Menu
+
+          break;
+        case 2: // Alarm Clock
+
+          break;
+        case 3: 
+
+          break;
+      }
+      break;
+    case 1: //Menu Modů
+      switch(currentRow) {
+        case 0: //Return Main Menu
+            returnMainMenu();
+          break;
+        case 1: // ON/OFF White Mode
+
+          break;
+        case 2: // ON/OFF Temp Mode
+
+          break;
+        case 3: // There is nothing we can do "Now"
+
+          break;
+      }
+      break;
+    case 2: 
+
+      break;
+  }
+  
+  
+  
+  
   if(state == 0 && currentRow == 0) {
     state = 1;
     change = HIGH;
     currentRow = 0;
     cleanDisplay();
-    modesMenu();
   }
-
-}
-*/
-
-void startMenu() {
-
-  lcd.setCursor(2, 0);
-  lcd.println("1. Mode menu");
-  lcd.setCursor(2, 1);
-  lcd.println("2. #Temp setup#");
-  lcd.setCursor(2, 2);
-  lcd.println("3. #Alarm Clock#");
-  lcd.setCursor(1, 3);
-  lcd.println("Have a good day :D");
-
-}
-
-void modesMenu() {
-
-  lcd.setCursor(2, 0);
-  if(whiteOn == LOW) {
-    lcd.println("1. WhiteMode OFF");
-  }else{
-    lcd.println("1. WhiteMode ON");
-  }
-  lcd.setCursor(2, 1);
-  if(tempColorOn == LOW) {
-    lcd.println("2. TempMode OFF");
-  }else{
-    lcd.println("2. TempMode ON");
-  }
-  lcd.setCursor(2, 2);
-  lcd.println("3. #cumming soon#");
-  lcd.setCursor(2, 3);
-  lcd.println("Have a good day :D");
 
 }
 
@@ -225,4 +209,9 @@ void cleanDisplay() {
   lcd.println("                  ");
 }
 
+void returnMainMenu() {
+  menuRows = menuMainRows;
+  state = 0;
+  maxCurrentSlide = menuRows - 4;
+}
 
