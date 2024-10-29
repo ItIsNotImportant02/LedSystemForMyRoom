@@ -1,11 +1,16 @@
 
 #include <LCDI2C_Multilingual.h>
 #include <WS2812FX.h>
+#include <FastLED.h>
 
 #define BUTTON1 16
 #define BUTTON2 17
 #define BUTTON3 18
 #define BUTTON4 19
+
+#define NUM_LEDS 8
+#define DATA_PIN 14
+CRGB leds[NUM_LEDS];
 
 bool buttPressed = LOW;
 
@@ -46,6 +51,8 @@ void setup() {
 
   change = HIGH;
   menuRows = menuMainRows;
+
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 
 }
 
@@ -212,7 +219,7 @@ void cleanDisplay() {
 
 void returnMainMenu() {
   cleanDisplay();
-  Serial.print("I am idiot");
+  Serial.print("I am idiot"); 
   currentMenuSlide = 0;
   menuRows = menuMainRows;
   state = 0;
